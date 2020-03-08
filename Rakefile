@@ -9,7 +9,7 @@ end
 
 task :compile do
   puts "Compiling ext/digest/blake3/blake3.o"
-  `cd ext/digest/blake3 && ruby extconf.rb && make`
+  system('cd ext/digest/blake3 && ruby extconf.rb && make')
 end
 
 task :default => [:compile, :test]
