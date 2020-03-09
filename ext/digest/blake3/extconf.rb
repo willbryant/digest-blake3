@@ -6,6 +6,8 @@ end
 
 CONFIG["optflags"] = "-O3"
 
+append_cflags("-std=c99")
+
 # we can't let create_makefile default to compiling all source files in the directory, because then
 # it won't set the appropriate flags for the different versions.  start by explicitly resetting the
 # list to the files that we always want.  blake3_ruby.o is the only one we've implemented ourselves
