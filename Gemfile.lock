@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    digest-blake3 (0.22.0)
+    digest-blake3 (0.22.1)
 
 GEM
   remote: https://rubygems.org/
