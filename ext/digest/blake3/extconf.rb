@@ -5,7 +5,7 @@ unless have_header("ruby.h") && have_header("ruby/digest.h")
 end
 
 CONFIG["optflags"] = "-O3"
-
+$warnflags.sub!("-Wdeclaration-after-statement", "") # eg. RVM compiles Ruby with this set on some platforms, so it ends up in RbConfig::MAKEFILE_CONFIG
 append_cflags("-std=c99")
 
 # we can't let create_makefile default to compiling all source files in the directory, because then
