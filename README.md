@@ -58,7 +58,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/digest-blake3.
+Bug reports and pull requests are welcome on GitHub at https://github.com/willbryant/digest-blake3.
 
 ## License
 
