@@ -34,10 +34,12 @@ def check_supported_flags(flags, obj_if_enabled, def_if_disabled)
   end
 end
 
-check_supported_flags("-msse2",                          "blake3_sse2.o",   "-DBLAKE3_NO_SSE2")
-check_supported_flags("-msse4.1",                        "blake3_sse41.o",  "-DBLAKE3_NO_SSE41")
-check_supported_flags("-mavx2",                          "blake3_avx2.o",   "-DBLAKE3_NO_AVX2")
-check_supported_flags("-mavx512f -mavx512vl -mavx512bw", "blake3_avx512.o", "-DBLAKE3_NO_AVX512")
+unless RUBY_PLATFORM.include? 'arm64' or RUBY_PLATFORM.include? 'aarch64'
+  check_supported_flags("-msse2",                          "blake3_sse2.o",   "-DBLAKE3_NO_SSE2")
+  check_supported_flags("-msse4.1",                        "blake3_sse41.o",  "-DBLAKE3_NO_SSE41")
+  check_supported_flags("-mavx2",                          "blake3_avx2.o",   "-DBLAKE3_NO_AVX2")
+  check_supported_flags("-mavx512f -mavx512vl -mavx512bw", "blake3_avx512.o", "-DBLAKE3_NO_AVX512")
+end
 
 if have_header("arm_neon.h")
   $objs << "blake3_neon.o"
