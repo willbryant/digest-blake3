@@ -46,7 +46,7 @@ if have_header("arm_neon.h")
   $defs << "-DBLAKE3_USE_NEON"
 end
 
-create_makefile("digest/blake3") do |conf|
+create_makefile("digest/blake3/blake3") do |conf|
   # annoyingly, we have to repeat this line from the default output, so that it appears above the
   # defines we add below and therefore becomes the default target.  otherwise running 'make' with
   # no arguments builds the first of our .o files instead of the library.
