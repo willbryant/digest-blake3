@@ -31,8 +31,24 @@ void Init_blake3(void) {
 	cDigest_Base = rb_path2class("Digest::Base");
 	cDigest_BLAKE3 = rb_define_class_under(mDigest, "BLAKE3", cDigest_Base);
 
+	/* Register the metadata.
+	 *
+	 * Ruby 3.4's digest framework (digest 3.2+) validates that the "metadata"
+	 * ivar is a TypedData object and raises
+	 *   TypeError: Digest::BLAKE3::metadata is not initialized properly
+	 * from Digest::Base#initialize when it is not. The legacy untyped
+	 * Data_Wrap_Struct fails that check.
+	 *
+	 * rb_digest_make_metadata is the supported API but is absent from older
+	 * ruby/digest.h, so extconf.rb feature-detects it and the old path is kept
+	 * for Rubies that predate it. */
+#ifdef HAVE_RB_DIGEST_MAKE_METADATA
+	rb_iv_set(cDigest_BLAKE3, "metadata",
+		rb_digest_make_metadata(&blake3));
+#else
 #undef RUBY_UNTYPED_DATA_WARNING
 #define RUBY_UNTYPED_DATA_WARNING 0
 	rb_iv_set(cDigest_BLAKE3, "metadata",
 		Data_Wrap_Struct(0, 0, 0, (void *)&blake3));
+#endif
 }

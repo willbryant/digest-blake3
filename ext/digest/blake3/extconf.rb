@@ -8,6 +8,22 @@ CONFIG["optflags"] = "-O3"
 $warnflags.sub!("-Wdeclaration-after-statement", "") # eg. RVM compiles Ruby with this set on some platforms, so it ends up in RbConfig::MAKEFILE_CONFIG
 append_cflags("-std=c99")
 
+# Ruby 3.4's digest framework (digest 3.2+) validates that the "metadata" ivar is
+# a TypedData object; the legacy untyped Data_Wrap_Struct fails that check with
+# "TypeError: Digest::BLAKE3::metadata is not initialized properly".
+# rb_digest_make_metadata is the supported replacement, but it does not exist in
+# older ruby/digest.h (Ruby 2.7 reports RUBY_DIGEST_API_VERSION 3 without
+# providing it), so it has to be feature-detected rather than version-gated.
+#
+# have_func links rather than only compiling. That matters: a compile-only probe
+# relies on an implicit function declaration being an error, which is true for
+# clang >= 16 and gcc >= 14 but only a WARNING on gcc 7 -- the compiler on our
+# Ubuntu 18.04 hosts. There the probe would false-positive, the fallback would be
+# skipped, and the extension would build with an unresolved symbol that only
+# fails at require time. The probe deliberately runs after the flag setup above
+# so it is tested under the same flags as the real build.
+have_func("rb_digest_make_metadata", "ruby/digest.h")
+
 # we can't let create_makefile default to compiling all source files in the directory, because then
 # it won't set the appropriate flags for the different versions.  start by explicitly resetting the
 # list to the files that we always want.  blake3_ruby.o is the only one we've implemented ourselves
